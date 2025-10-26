@@ -1,0 +1,5 @@
+# Ignore dependencies and other unnecessary files
+node_modules/
+.env
+.vscode/
+.DS_Store
