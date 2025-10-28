@@ -24,7 +24,7 @@ export function generateNextUser() {
 
   const username = `georgitest${userNumber}`;
   const email = `georgitest${userNumber}@example.com`;
-  const password = `FIXED_PASSWORD`;
+  const password = `Test12#$`;
 
   saveLastUser({ username, email, password });
 
