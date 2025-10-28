@@ -6,7 +6,9 @@
   "main": "index.js",
   "scripts": {
     "test": "npx playwright test",
-    "test-ui": "npx playwright test --ui"
+    "test-ui": "npx playwright test --ui",
+    "test:login": "npx playwright test tests/login.spec.ts",
+    "test:register": "npx playwright test tests/register.spec.ts"
 
   },
   "keywords": [],

@@ -6,6 +6,9 @@ export default defineConfig({
         headless: false,
         launchOptions: {
             slowMo: 1500,
-        },
+        },    
+        
+        baseURL: 'https://automationexercise.com',
+
     },
 });

@@ -3,6 +3,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { saveLastUser } from './saveLastUser';
 
+const FIXED_PASSWORD = 'Test12#$';
+
 
 // __filename и __dirname в ES модули
 const __filename = fileURLToPath(import.meta.url);
@@ -22,8 +24,8 @@ export function generateNextUser() {
 
   const username = `georgitest${userNumber}`;
   const email = `georgitest${userNumber}@example.com`;
-  const password = `pass${userNumber}`;
-  
+  const password = `FIXED_PASSWORD`;
+
   saveLastUser({ username, email, password });
 
   console.log(`Generated username: ${username}, email: ${email}`);
