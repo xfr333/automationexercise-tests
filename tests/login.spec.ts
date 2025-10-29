@@ -1,3 +1,6 @@
+// COVERED Test Case 2 and 3 FROM AUTOMATION EXERCISE
+
+
 import {test, expect} from '@playwright/test';
 import {readLastUser} from '../utils/saveLastUser';
 import config from '../config.json' assert { type: 'json' };
@@ -7,12 +10,16 @@ test ('Login with last generated user', async ({page}) => {
     const user = readLastUser();
 //Login page is loaded
 await test.step('Navigate to home page', async () => {
-  await page.goto(`${config.site_url}/login`);
+  await page.goto(`${config.site_url}`);
+  await page.locator('body').isVisible();
+
   const consentButton = page.locator('button', { hasText: 'Consent' });
   if (await consentButton.isVisible()) {
     await consentButton.click();
   }
-await expect(page.locator('text=Login to your account')).toBeVisible();
+  await page.click('text=Signup / Login');
+
+  await expect(page.locator('text=Login to your account')).toBeVisible();
 });  
  
 //NEGATIVE TESTING FOR LOGIN FORM
@@ -32,17 +39,20 @@ await test.step('Negative login: empty email, valid password', async () => {
       await expect(page.locator('[data-qa="login-email"]')).toHaveJSProperty('validationMessage', 'Please fill out this field.');
 });
 
-await test.step('Negative login: wrong email, wrong password', async () => {
-  await page.fill('[data-qa="login-email"]','fakeuser1@example.com');
-  await page.fill('[data-qa="login-password"]', 'WrongPass123');
-    await page.click('[data-qa="login-button"]');
-      await expect(page.locator('text=Your email or password is incorrect!')).toBeVisible();
-});
+// await test.step('Negative login: wrong email, wrong password', async () => {
+//   await page.fill('[data-qa="login-email"]','fakeuser1@example.com');
+//   await page.fill('[data-qa="login-password"]', 'WrongPass123');
+//     await page.click('[data-qa="login-button"]');
+//       await expect(page.locator('text=Your email or password is incorrect!')).toBeVisible();
+// });
 
 // Enter email address and password
 await test.step('Enter email address and password', async () => {  
   await page.fill('[data-qa="login-email"]', user.email);
   await page.fill('[data-qa="login-password"]', user.password);
+  await page.click('[data-qa="login-button"]');
+  await expect(page.locator('text=Your email or password is incorrect!')).toBeVisible();
+
   // Define locators for validation
   const emailField = page.locator('[data-qa="login-email"]');
   const passwordField = page.locator('[data-qa="login-password"]');
