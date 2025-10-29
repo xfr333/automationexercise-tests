@@ -1,4 +1,4 @@
-// COVERED Test Case 2 and 3 FROM AUTOMATION EXERCISE
+// COVERED Test Case 2, 3 and 4 FROM AUTOMATIONEXERCISE.COM
 
 
 import {test, expect} from '@playwright/test';
@@ -7,6 +7,7 @@ import config from '../config.json' assert { type: 'json' };
 
 // MAIN TEST STARTS HERE
 test ('Login with last generated user', async ({page}) => {
+  test.setTimeout(600000);
     const user = readLastUser();
 //Login page is loaded
 await test.step('Navigate to home page', async () => {
@@ -83,6 +84,15 @@ await test.step('Login with persistent user', async () => {
 await test.step('Verify that Logged in', async () => {
 
 await expect(page.locator('text=Logged in as Test')).toBeVisible();
-  console.log(`Successfully logged in as Test}`);
+  console.log(`Successfully logged in as Test`);
     });
+
+await test.step('Click Logout button', async () => {
+  await page.click('text=Logout');
+  await expect(page.locator('[data-qa="login-email"]')).toBeVisible();
+
+  await page.goto(`${config.site_url}/login`);
+
+
+});
 });

@@ -1,3 +1,5 @@
+// COVERED Test Case 1 FROM AUTOMATIONEXERCISE.COM
+
 import { test, expect } from '@playwright/test';
 import { generateNextUser } from '../utils/userGenerator';
 //1. Launch browser
