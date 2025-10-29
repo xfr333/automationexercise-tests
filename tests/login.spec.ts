@@ -15,7 +15,29 @@ await test.step('Navigate to home page', async () => {
 await expect(page.locator('text=Login to your account')).toBeVisible();
 });  
  
-//TO DO: add check for other elements on the page
+//NEGATIVE TESTING FOR LOGIN FORM
+
+await test.step('Negative login: valid email, empty password', async () => {
+  await page.fill('[data-qa="login-email"]', config.persistent_test_user.email);
+    await page.fill('[data-qa="login-password"]', '');
+    await page.click('[data-qa="login-button"]');
+      await expect(page.locator('[data-qa="login-password"]')).toHaveJSProperty('validationMessage', 'Please fill out this field.');
+
+});
+
+await test.step('Negative login: empty email, valid password', async () => {
+  await page.fill('[data-qa="login-email"]', '');
+    await page.fill('[data-qa="login-password"]', config.persistent_test_user.password);
+    await page.click('[data-qa="login-button"]');
+      await expect(page.locator('[data-qa="login-email"]')).toHaveJSProperty('validationMessage', 'Please fill out this field.');
+});
+
+await test.step('Negative login: wrong email, wrong password', async () => {
+  await page.fill('[data-qa="login-email"]','fakeuser1@example.com');
+  await page.fill('[data-qa="login-password"]', 'WrongPass123');
+    await page.click('[data-qa="login-button"]');
+      await expect(page.locator('text=Your email or password is incorrect!')).toBeVisible();
+});
 
 // Enter email address and password
 await test.step('Enter email address and password', async () => {  
