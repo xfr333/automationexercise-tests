@@ -1,4 +1,4 @@
-// COVERED Test Case 1 FROM AUTOMATIONEXERCISE.COM
+// COVERED Test Case 1 and 5 FROM AUTOMATIONEXERCISE.COM
 
 import { test, expect } from '@playwright/test';
 import { generateNextUser } from '../utils/userGenerator';
@@ -25,21 +25,31 @@ await page.click('text=Signup / Login');
 await expect(page.locator('body')).toBeVisible();
 
 //5. Verify 'New User Signup!' is visible
-await expect(page.locator('text=New User Signup!')).toBeVisible();
 });
 
-//6. Enter name and email address
+//6.1 Enter name and email address
 await test.step('Enter name and email address', async () => {
-await expect(page.locator('[data-qa="signup-name"]')).toBeVisible();
-await expect(page.locator('[data-qa="signup-email"]')).toBeVisible();
-await page.getByRole('button', { name: 'Signup' }).click();
+      await expect(page.locator('text=New User Signup!')).toBeVisible();
+      await expect(page.locator('[data-qa="signup-name"]')).toBeVisible();
+      await expect(page.locator('[data-qa="signup-email"]')).toBeVisible();
+      await page.getByRole('button', { name: 'Signup' }).click();
 
-//6.0 Check name validation
-await expect(page.getByRole('textbox', { name: 'Name' })).toHaveJSProperty('validationMessage', 'Please fill out this field.');
-await page.locator('[data-qa="signup-name"]').fill(user.username);
-//6.1 Check email validation
-await page.getByRole('button', { name: 'Signup' }).click();
-await expect(page.locator('[data-qa="signup-email"]')).toHaveJSProperty('validationMessage', 'Please fill out this field.');
+//6.1 Check name validation
+            await expect(page.getByRole('textbox', { name: 'Name' })).toHaveJSProperty('validationMessage', 'Please fill out this field.');
+            await page.locator('[data-qa="signup-name"]').fill(user.username);
+//6.2 Check email validation
+                  await page.getByRole('button', { name: 'Signup' }).click();
+                  await expect(page.locator('[data-qa="signup-email"]')).toHaveJSProperty('validationMessage', 'Please fill out this field.');
+
+//6.3 Enter existing user 
+await test.step('Negative login: existing user', async () => {
+      await page.fill('[data-qa="signup-name"]', 'Test');
+      await page.fill('[data-qa="signup-email"]','georgitest1@example.com');
+      await page.getByRole('button', { name: 'Signup' }).click();
+      await expect(page.locator('text=Email Address already exist!')).toBeVisible();
+});
+
+
 
 await page.locator('[data-qa="signup-name"]').fill(user.username);
 await page.locator('[data-qa="signup-email"]').fill(user.email);
@@ -95,33 +105,27 @@ await page.getByRole('button', { name: 'Create Account' }).click();
 await expect(page.locator('#last_name')).toHaveJSProperty('validationMessage', 'Please fill out this field.');
 await page.locator('#last_name').fill('Atanasov');
 
-
 await page.getByRole('button', { name: 'Create Account' }).click();
 await expect(page.locator('#address1')).toHaveJSProperty('validationMessage', 'Please fill out this field.');
 await page.locator('#address1').fill('Some Address 123');
 });
-
 
 //await page.getByRole('button', { name: 'Create Account' }).click();
 //await expect(page.locator('#country')).toHaveJSProperty('validationMessage', 'Please select an item in the list.');
 await test.step('Select country', async () => {
 await page.locator('#country').selectOption('Canada');
 
-
 await page.getByRole('button', { name: 'Create Account' }).click();
 await expect(page.locator('#state')).toHaveJSProperty('validationMessage', 'Please fill out this field.');
 await page.locator('#state').fill('Some State');
-
 
 await page.getByRole('button', { name: 'Create Account' }).click();
 await expect(page.locator('#city')).toHaveJSProperty('validationMessage', 'Please fill out this field.');
 await page.locator('#city').fill('Some City');
 
-
 await page.getByRole('button', { name: 'Create Account' }).click();
 await expect(page.locator('#zipcode')).toHaveJSProperty('validationMessage', 'Please fill out this field.');
 await page.locator('#zipcode').fill('12345');
-
 
 await page.getByRole('button', { name: 'Create Account' }).click();
 await expect(page.locator('#mobile_number')).toHaveJSProperty('validationMessage', 'Please fill out this field.');
