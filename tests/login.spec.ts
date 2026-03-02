@@ -4,14 +4,16 @@
 import {test, expect} from '@playwright/test';
 import {readLastUser} from '../utils/saveLastUser';
 import config from '../config.json' assert { type: 'json' };
+import {LoginPage} from '../pages/LoginPage';
 
 // MAIN TEST STARTS HERE
 test ('Login with last generated user', async ({page}) => {
   test.setTimeout(600000);
     const user = readLastUser();
+    const loginPage = new LoginPage(page);
 //Login page is loaded
 await test.step('Navigate to home page', async () => {
-  await page.goto(`${config.site_url}`);
+  await loginPage.navigate();
   await page.locator('body').isVisible();
 
   const consentButton = page.locator('button', { hasText: 'Consent' });
@@ -68,9 +70,12 @@ if (emailValidation || passwordValidation) {
 
 await test.step('Login with persistent user', async () => {
   const persistentUser = config.persistent_test_user;
-  await page.fill('[data-qa="login-email"]', persistentUser.email);
-  await page.fill('[data-qa="login-password"]', persistentUser.password);
-  await page.click('[data-qa="login-button"]');
+
+await loginPage.login(persistentUser.email, persistentUser.password);
+
+  // await page.fill('[data-qa="login-email"]', persistentUser.email);
+  // await page.fill('[data-qa="login-password"]', persistentUser.password);
+  // await page.click('[data-qa="login-button"]');
   await expect(page.locator('text=Logged in as Test')).toBeVisible();
     console.log(`Successfully logged in as Test`);
 });
@@ -81,8 +86,9 @@ await test.step('Verify that Logged in', async () => {
     console.log(`Successfully logged in as Test`);
     });
 await test.step('Click Logout button', async () => {
-  await page.click('text=Logout');
-   await expect(page.locator('[data-qa="login-email"]')).toBeVisible();
+  await loginPage.logout();
+  // await page.click('text=Logout');
+  await expect(page.locator('[data-qa="login-email"]')).toBeVisible();
   await page.goto(`${config.site_url}/login`);
 });
 });

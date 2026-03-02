@@ -2,17 +2,20 @@
 
 import { test, expect } from '@playwright/test';
 import { generateNextUser } from '../utils/userGenerator';
+import { RegisterPage } from '../pages/RegisterPage';
 //1. Launch browser
 
 test('Register New User', async ({ page }) => {
       test.setTimeout(180000);
 
       const user = generateNextUser();
+      const registerPage = new RegisterPage(page);
 
 //2. Navigate to url 'http://automationexercise.com'
 
 await test.step('Navigate to home page', async () => {
-      await page.goto('/');
+      await registerPage.navigate();
+      //await page.goto('/');
 
 //3. Verify that home page is visible successfully
       await expect(page.locator('body')).toBeVisible();
@@ -43,25 +46,26 @@ await test.step('Enter name and email address', async () => {
 
 //6.3 Enter existing user 
 await test.step('Negative login: existing user', async () => {
-      await page.fill('[data-qa="signup-name"]', 'Test');
-      await page.fill('[data-qa="signup-email"]','georgitest1@example.com');
-      await page.getByRole('button', { name: 'Signup' }).click();
+      await registerPage.fillSignupForm('Test', 'georgitest1@example.com');
+      // await page.fill('[data-qa="signup-name"]', 'Test');
+      // await page.fill('[data-qa="signup-email"]','georgitest1@example.com');
+      // await page.getByRole('button', { name: 'Signup' }).click();
       await expect(page.locator('text=Email Address already exist!')).toBeVisible();
 });
 
 
-
-      await page.locator('[data-qa="signup-name"]').fill(user.username);
-      await page.locator('[data-qa="signup-email"]').fill(user.email);
+      await registerPage.fillSignupForm(user.username, user.email);
+      // await page.locator('[data-qa="signup-name"]').fill(user.username);
+      // await page.locator('[data-qa="signup-email"]').fill(user.email);
 });
 
-//7. Click 'Signup' button
-await test.step('Click Signup button', async () => {
-      await page.locator('[data-qa="signup-button"]').click();
+//7. Click 'Signup' button - *this is moved with POM in the step above*
+// await test.step('Click Signup button', async () => {
+      // await page.locator('[data-qa="signup-button"]').click();
 
 //8. Verify that 'ENTER ACCOUNT INFORMATION' is visible
       await expect(page.locator('text=Enter Account Information')).toBeVisible();
-});
+//});
 
 //9. Fill details: Title, Name, Email, Password, Date of birth
 await test.step('Fill details: Title, Name, Email, Password, Date of birth', async () => {
@@ -74,7 +78,8 @@ await test.step('Fill details: Title, Name, Email, Password, Date of birth', asy
       await page.locator('#id_gender1').check();
       await expect(page.locator('#name')).toHaveValue(user.username);
       await expect(page.locator('#email')).toHaveValue(user.email);
-      await page.locator('#password').fill('Test1234');
+      await registerPage.fillPassword('Test1234');
+      //await page.locator('#password').fill('Test1234');
       await page.locator('#days').selectOption('10');
       await page.locator('#months').selectOption('5');
       await page.locator('#years').selectOption('1990');     
@@ -138,21 +143,26 @@ await test.step('Select checkbox Sign up for our newsletter!', async () => {
 
 //13. Click 'Create Account button'
 await test.step('Click Create Account button', async () => {
-      await page.getByRole('button', { name: 'Create Account' }).click();
+      await registerPage.createAccount();
+      // await page.getByRole('button', { name: 'Create Account' }).click();
 //14. Verify that 'ACCOUNT CREATED!' is visible
        await expect(page.locator('text=Account Created!')).toBeVisible();
 //15. Click 'Continue' button
-      await page.locator('[data-qa="continue-button"]').click();
+      await registerPage.clickContinue();
+      // await page.locator('[data-qa="continue-button"]').click();
+      await page.waitForURL('/');
 //16. Verify that 'Logged in as username' is visible
       await expect(page.locator(`text=Logged in as ${user.username}`)).toBeVisible();
 });
 
 //17. Click 'Delete Account' button
 await test.step('Click Delete Account button', async () => {
-      await page.getByRole('link', { name: 'Delete Account' }).click();
+      await registerPage.deleteAccount();
+      // await page.getByRole('link', { name: 'Delete Account' }).click();
 //18. Verify that 'ACCOUNT DELETED!' is visible and click 'Continue' button
       await expect(page.locator('text=Account Deleted!')).toBeVisible();
-      await page.locator('[data-qa=continue-button]').click();
+      await registerPage.clickContinue();
+      // await page.locator('[data-qa=continue-button]').click();
 });
 
 });
